@@ -1,0 +1,96 @@
+{
+  "manifest_version": "0.3",
+  "name": "pixa",
+  "display_name": "PIXA — x402 Wallet for AI Agents (Sui)",
+  "version": "0.4.0",
+  "icon": "PIXA-LOGO.PNG",
+  "description": "Wallet for Claude. Check USDC balance and sign x402 payments on Sui — no API keys, no accounts.",
+  "long_description": "Give Claude a wallet on Sui. PIXA adds tools for:\n\n- **check_balance** — View your USDC and SUI balance and wallet address\n- **pay** — Sign an x402 payment authorization (Sui scheme — Phase 3)\n- **x402_fetch** — Fetch a URL with automatic x402 payment handling\n- **spending_report** — Audit what this session has spent\n- **search_bazaar** — Discover x402-gated AI services\n\nBudget limits protect your funds: set max per call and max per day.",
+  "author": {
+    "name": "PIXA",
+    "url": "https://github.com/soumyacodes007/Pixa"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soumyacodes007/Pixa"
+  },
+  "homepage": "https://github.com/soumyacodes007/Pixa",
+  "keywords": ["x402", "wallet", "usdc", "payments", "sui", "agent-commerce"],
+
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "SUI_PRIVATE_KEY": "${user_config.sui_private_key}",
+        "NETWORK": "${user_config.network}",
+        "MAX_PER_CALL": "${user_config.max_per_call}",
+        "MAX_PER_DAY": "${user_config.max_per_day}"
+      }
+    }
+  },
+
+  "user_config": {
+    "sui_private_key": {
+      "type": "string",
+      "title": "Sui Private Key",
+      "description": "Sui ed25519 private key (suiprivkey1... or raw bytes) used to sign x402 payments on Sui Testnet/Mainnet. Stored securely in your OS keychain.",
+      "required": false,
+      "sensitive": true
+    },
+    "network": {
+      "type": "string",
+      "title": "Default Network",
+      "description": "Payment network: sui-testnet or sui-mainnet.",
+      "required": false,
+      "default": "sui-testnet"
+    },
+    "max_per_call": {
+      "type": "string",
+      "title": "Max USDC per Payment",
+      "description": "Maximum USDC allowed per single payment. Safety limit.",
+      "required": false,
+      "default": "0.10"
+    },
+    "max_per_day": {
+      "type": "string",
+      "title": "Max USDC per Day",
+      "description": "Maximum total USDC allowed per calendar day.",
+      "required": false,
+      "default": "20.00"
+    }
+  },
+
+  "tools": [
+    {
+      "name": "check_balance",
+      "description": "Check USDC and SUI balance and wallet address on Sui."
+    },
+    {
+      "name": "pay",
+      "description": "Sign an x402 USDC payment authorization. Returns the payment header value."
+    },
+    {
+      "name": "x402_fetch",
+      "description": "Fetch a URL with automatic x402 payment. Handles 402 responses by signing a USDC payment and retrying with the payment header."
+    },
+    {
+      "name": "spending_report",
+      "description": "Show this session's spending: today, this session, remaining budget, and recent payments."
+    },
+    {
+      "name": "search_bazaar",
+      "description": "Search for x402-gated AI services that agents can autonomously pay for."
+    }
+  ],
+
+  "compatibility": {
+    "platforms": ["darwin", "win32"],
+    "runtimes": {
+      "node": ">=22.0.0"
+    }
+  }
+}
